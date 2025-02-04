@@ -36,7 +36,7 @@ To run the web app you can type the command:
 php artisan serve
 npm run dev
 ```
-php artisan serve is unnecessary if you are using laravel herd you just have to do `npm run dev` and write the url for example `fpm_tech_pos.test` take note of the .test because is very important
+php artisan serve is unnecessary if you are using laravel herd, you just have to do `npm run dev` and write the url for example `fpm_tech_pos.test` take note of the `.test` because is very important
 
 # TO MAKE THE AI PREDICTION FEATURE WORK YOU NEED TO INSTALL PYTHON AND PACKAGES TO YOUR LOCAL MACHINE
 
