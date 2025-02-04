@@ -1,6 +1,6 @@
 # Inventory Management System and POS with AI PREDICTION
 
-A brief description of your project.
+A simple inventory management system and a point of sale with sales AI prediction.
 
 ## 🚀 Installation
 
