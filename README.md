@@ -126,3 +126,11 @@ pip install pandas prophet matplotlib
 php artisan migrate --seed
 ```
 
+# Sample username and password
+
+```sh
+username: admin
+password: password
+```
+
+
