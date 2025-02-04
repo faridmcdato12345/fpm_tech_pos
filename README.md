@@ -50,7 +50,8 @@ Second, after installing python you need to install some packages using:
 pip install pandas prophet matplotlib
 ```
 
-# TO CREATE DATABASE AND ITS TABLE WITH SOME FAKE DATA run the following command:
+# ![image](https://github.com/user-attachments/assets/d4bc45ba-8277-41cb-bc3b-8580b74b118a)
+TO CREATE DATABASE AND ITS TABLE WITH SOME FAKE DATA run the following command:
 
 ```sh
 php artisan migrate --seed
