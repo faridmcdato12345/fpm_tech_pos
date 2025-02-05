@@ -30,6 +30,13 @@ Then, generate application key using:
 ```sh
 php artisan key:generate
 ```
+#IMPORTANT
+To use laravel file storage by using:
+
+```sh
+php artisan storage:link
+```
+
 To run the web app you can type the command:
 
 ```sh
