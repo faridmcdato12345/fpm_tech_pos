@@ -37,7 +37,7 @@ class AiController extends Controller
         //
         // Run the Python script with the given parameters
         $scriptPath = base_path('app/ai_scripts/python/predict.py');
-        $pythonPath = 'C:\\Users\\krist\\AppData\\Local\\Programs\\Python\\Python313\\python.exe';
+        $pythonPath = env('PYTHON_PATH', 'python');
         $command = escapeshellcmd("$pythonPath")
             . ' ' . escapeshellarg($scriptPath)
             . ' ' . escapeshellarg($tempJsonPath)

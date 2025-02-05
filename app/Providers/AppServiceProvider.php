@@ -26,9 +26,9 @@ class AppServiceProvider extends ServiceProvider
         if (DB::connection()->getDriverName() === 'sqlite') {
             DB::statement('PRAGMA foreign_keys=ON;');
         }
-        if ($this->app->runningInConsole()) {
-            Artisan::call('ai:serve'); // Start AI automatically
-        }
+        // if ($this->app->runningInConsole()) {
+        //     Artisan::call('ai:serve'); // Start AI automatically
+        // }
         Collection::macro('paginate', function ($perPage = 15, $page = null) {
             $page = $page ?: request()->get('page', 1);
             $offset = ($page - 1) * $perPage;

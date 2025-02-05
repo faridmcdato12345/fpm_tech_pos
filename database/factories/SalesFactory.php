@@ -5,6 +5,8 @@ namespace Database\Factories;
 
 use Carbon\Carbon;
 use App\Models\ProductDetail;
+use App\Models\ProductStock;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,13 +29,17 @@ class SalesFactory extends Factory
 
         // Create a Carbon instance from the random timestamp
         $randomDate = Carbon::createFromTimestamp($randomTimestamp);
+        $productId = ProductStock::inRandomOrder()->first()->id;
         return [
-            'product_id' => ProductDetail::inRandomOrder()->first()->id,
+            'product_id' => $productId,
             'quantity' => fake()->numberBetween(1,100),
             'invoice_number' => 'INV-' . fake()->unique()->numberBetween(100000, 999999),
             'remarks' => fake()->randomElement(['DAMAGE','COMPLETE','RETURN','EXPIRED','CHANGED','OTHERS','VOIDED ITEM','VOIDED TRANSACTION']),
-            'created_at' => fake()->dateTimeBetween('2024-01-07', '2024-07-23'),
+            'created_at' => fake()->dateTimeBetween('2024-01-07', '2024-07-24'),
             'updated_at' => now(),
+            'product_stock_id' => $productId,
+            'user_id' => 1,
+            'customer_id' => 1,
         ];
     }
 }
