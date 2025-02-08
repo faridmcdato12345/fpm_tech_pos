@@ -22,19 +22,19 @@ class AiController extends Controller
         $periods = $validated['periods'];
         // Query the database for historical sales data
         $salesData = DB::table('sales')
-            ->select('created_at as ds', 'quantity as y') // Rename fields for Prophet compatibility
-            ->where('remarks',config('remarks.complete'))
-            ->groupBy('created_at')
-            ->orderBy('created_at', 'asc')
+            ->join('products', 'sales.product_id', '=', 'products.id')
+            ->selectRaw("strftime('%Y-%m-%d', sales.created_at) as ds, sales.product_id, products.product_name as item_name, SUM(sales.quantity) as y")
+            ->groupBy('ds', 'sales.product_id', 'products.product_name')
+            ->orderBy('ds', 'asc')
             ->get();
-        //dd($salesData);
+
 
         // Save the queried data to a temporary JSON file
         $tempJsonPath = storage_path('app/temp_sales_data.json');
         file_put_contents($tempJsonPath, $salesData->toJson());
 
-         $predictionsPath = storage_path('app/predictions.json'); // Output JSON file
-        //
+        $predictionsPath = storage_path('app/predictions.json'); // Output JSON file
+        //dd($predictionsPath);
         // Run the Python script with the given parameters
         $scriptPath = base_path('app/ai_scripts/python/predict.py');
         $pythonPath = env('PYTHON_PATH', 'python');
@@ -54,6 +54,6 @@ class AiController extends Controller
             return response()->json(['predictions' => $predictions]);
         }
 
-        return response()->json(['error' => 'Prediction failed.'], 500);
+        return response()->json(['error' => 'Prediction failed.', 'details' => $output], 500);
     }
 }

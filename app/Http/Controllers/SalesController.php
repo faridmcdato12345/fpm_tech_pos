@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SalesController extends Controller
 {
@@ -134,22 +136,22 @@ class SalesController extends Controller
         //
     }
 
-    public function dashboard(Request $request)
+    public function dashboard(Request $request): Response
     {
 
         $now = Carbon::now('Asia/Manila');
-        // $validated = $request->validate([
-        //     'start_date' => 'required|date',
-        //     'end_date' => 'required|date|after_or_equal:start_date',
-        // ]);
-        // $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-        // $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+
+        $selectedDate = $request->input('date', $now->toDateString()); // Default to today if no date is selected
+        dd($selectedDate);
+        // Convert the selected date to Carbon instance
+        $selectedDateCarbon = Carbon::parse($selectedDate)->startOfDay();
+
         $totalSalesPerMonth = Sales::select(
             DB::raw('strftime("%Y", sales.created_at) as year'),
             DB::raw('strftime("%m", sales.created_at) as month'),
-            DB::raw('SUM(sales.quantity * product_details.selling_price) as total_sales')
+            DB::raw('SUM(sales.quantity * product_stocks.selling_price) as total_sales')
         )
-        ->join('product_details', 'sales.product_id', '=', 'product_details.id')
+        ->join('product_stocks', 'sales.product_stock_id', '=', 'product_stocks.id')
         ->groupBy('year', 'month')
         ->orderBy('year', 'asc') // Order by year in ascending order
         ->orderBy('month', 'asc') // Order by month in ascending order
@@ -164,17 +166,20 @@ class SalesController extends Controller
                         $item->month_name = date('F', mktime(0, 0, 0, $item->month, 10)); // Convert month number to month name
                         return $item;
                     });
-        $topSellers = Sales::select('product_id', DB::raw('SUM(quantity) as total_quantity_sold'))
-                  ->groupBy('product_id')
-                  ->orderBy('total_quantity_sold', 'desc')
-                  ->take(5)
-                  ->get();
-        $recentSales = Sales::orderBy('created_at', 'asc')
-                   ->take(5)
-                   ->get();
+        $topSellers = Sales::with('products')->select('product_id', DB::raw('SUM(quantity) as total_quantity_sold'))
+                    ->whereDate('created_at', $selectedDateCarbon)
+                    ->groupBy('product_id')
+                    ->orderBy('total_quantity_sold', 'desc')
+                    ->take(5)
+                    ->get();
+        $recentSales = Sales::with('products')
+                    ->whereDate('created_at', $selectedDateCarbon)
+                    ->orderBy('created_at', 'asc')
+                    ->take(5)
+                    ->get();
         $totalSales = Sales::count();
         $numberSalesToday = Sales::whereDate('created_at',$now)->orderBy('created_at','desc')->count();
-        return inertia('Sale/Dashboard',[
+        return Inertia::render('Sale/Dashboard',[
             'user_name' => auth()->user()->fullname,
             'months' => $months,
             'topSellers' => $topSellers,

@@ -35,7 +35,7 @@ class SalesFactory extends Factory
             'quantity' => fake()->numberBetween(1,100),
             'invoice_number' => 'INV-' . fake()->unique()->numberBetween(100000, 999999),
             'remarks' => fake()->randomElement(['DAMAGE','COMPLETE','RETURN','EXPIRED','CHANGED','OTHERS','VOIDED ITEM','VOIDED TRANSACTION']),
-            'created_at' => fake()->dateTimeBetween('2024-01-07', '2024-07-24'),
+            'created_at' => fake()->dateTimeBetween('2024-01-07', '2025-02-07'),
             'updated_at' => now(),
             'product_stock_id' => $productId,
             'user_id' => 1,

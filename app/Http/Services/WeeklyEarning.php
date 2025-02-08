@@ -18,14 +18,14 @@ class WeeklyEarning
         $startOfLastWeek = $now->copy()->subWeek()->startOfWeek(Carbon::MONDAY);
         $endOfLastWeek = $now->copy()->subWeek()->endOfWeek(Carbon::SUNDAY);
         // Calculate earnings for the current week
-        $currentWeekEarnings = Sales::join('product_details', 'sales.product_id', '=', 'product_details.id')
+        $currentWeekEarnings = Sales::join('product_stocks', 'sales.product_id', '=', 'product_stocks.id')
                                     ->whereBetween('sales.created_at', [$startOfWeek, $endOfWeek])
-                                    ->sum(DB::raw('sales.quantity * product_details.selling_price'));
+                                    ->sum(DB::raw('sales.quantity * product_stocks.selling_price'));
 
         // Calculate earnings for the previous week
-        $lastWeekEarnings = Sales::join('product_details', 'sales.product_id', '=', 'product_details.id')
+        $lastWeekEarnings = Sales::join('product_stocks', 'sales.product_id', '=', 'product_stocks.id')
                                 ->whereBetween('sales.created_at', [$startOfLastWeek, $endOfLastWeek])
-                                ->sum(DB::raw('sales.quantity * product_details.selling_price'));
+                                ->sum(DB::raw('sales.quantity * product_stocks.selling_price'));
 
         // Calculate the percentage change
         $percentageChange = $lastWeekEarnings ? (($currentWeekEarnings - $lastWeekEarnings) / $lastWeekEarnings) * 100 : 100;
